@@ -2,198 +2,174 @@ import React from 'react';
 
 const Achievements: React.FC = () => {
   return (
-    <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-700 pb-20 pt-8">
-      {/* Header Section */}
-      <div className="text-center space-y-6 mb-16">
-        <div className="inline-flex items-center justify-center p-4 bg-white/5 rounded-3xl border border-white/10 mb-2 shadow-2xl">
-          <i className="fa-solid fa-award text-4xl text-white"></i>
+    <div style={{ maxWidth: '1100px', margin: '0 auto', paddingBottom: '60px', paddingTop: '24px' }}>
+
+      {/* Hero */}
+      <div className="animate-fade-in-up" style={{ textAlign: 'center', marginBottom: '48px' }}>
+        <div className="hero-badge" style={{ margin: '0 auto 20px' }}>
+          <i className="fa-solid fa-satellite-dish" style={{ fontSize: '28px', color: 'var(--color-accent)' }}></i>
         </div>
-        <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight">
-          Digital LED Display System
+        <h1 style={{ fontSize: 'clamp(28px, 5vw, 52px)', fontWeight: 900, letterSpacing: '-0.03em', lineHeight: 1.1, marginBottom: '14px' }}>
+          <span className="gradient-text">Digital LED Display</span><br />
+          <span style={{ color: 'var(--color-text)' }}>System</span>
         </h1>
-        <p className="text-lg md:text-xl text-white/50 max-w-2xl mx-auto font-medium tracking-wide">
-          An Industry-Academia Collaboration Project bridging academic knowledge with real-world industrial applications.
+        <p style={{ fontSize: '15px', color: 'var(--color-text-muted)', maxWidth: '520px', margin: '0 auto', lineHeight: 1.7 }}>
+          An Industry-Academia Collaboration bridging academic knowledge with real-world industrial applications.
         </p>
       </div>
 
       {/* Collaboration Badges */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-16">
-        <div className="bg-white/5 border border-white/10 backdrop-blur-2xl p-6 sm:p-8 rounded-3xl flex flex-col items-center text-center gap-4 hover:bg-white/10 transition-all duration-500">
-          <i className="fa-solid fa-building-columns text-3xl text-white"></i>
-          <div>
-            <h3 className="font-semibold text-white text-lg">GPREC</h3>
-            <p className="text-xs text-white/50 mt-1 font-medium">G. Pulla Reddy Engineering College</p>
+      <div className="animate-fade-in-up animate-delay-1 collab-grid" style={{ marginBottom: '48px' }}>
+        {[
+          { icon: 'fa-building-columns', name: 'GPREC', desc: 'G. Pulla Reddy Engineering College', gradient: 'rgba(34, 211, 238, 0.1)', border: 'rgba(34, 211, 238, 0.2)' },
+          { icon: 'fa-industry', name: 'QTPL', desc: 'Quality Technologies Pvt. Ltd.', gradient: 'rgba(139, 92, 246, 0.1)', border: 'rgba(139, 92, 246, 0.2)' },
+          { icon: 'fa-handshake-angle', name: 'PALS', desc: 'Pan IIT Alumni Leadership Series', gradient: 'rgba(52, 211, 153, 0.1)', border: 'rgba(52, 211, 153, 0.2)' },
+        ].map(org => (
+          <div key={org.name} className="glass-panel achievement-card collab-card" style={{ padding: '28px 20px' }}>
+            <div className="collab-icon" style={{ background: org.gradient, borderColor: org.border }}>
+              <i className={`fa-solid ${org.icon}`} style={{ fontSize: '20px', color: 'var(--color-text)' }}></i>
+            </div>
+            <h3 style={{ fontSize: '17px', fontWeight: 700, marginBottom: '4px' }}>{org.name}</h3>
+            <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', fontWeight: 500 }}>{org.desc}</p>
           </div>
-        </div>
-        <div className="bg-white/5 border border-white/10 backdrop-blur-2xl p-6 sm:p-8 rounded-3xl flex flex-col items-center text-center gap-4 hover:bg-white/10 transition-all duration-500">
-          <i className="fa-solid fa-industry text-3xl text-white"></i>
-          <div>
-            <h3 className="font-semibold text-white text-lg">QTPL</h3>
-            <p className="text-xs text-white/50 mt-1 font-medium">Quality Technologies Private Limited</p>
-          </div>
-        </div>
-        <div className="bg-white/5 border border-white/10 backdrop-blur-2xl p-6 sm:p-8 rounded-3xl flex flex-col items-center text-center gap-4 hover:bg-white/10 transition-all duration-500">
-          <i className="fa-solid fa-handshake-angle text-3xl text-white"></i>
-          <div>
-            <h3 className="font-semibold text-white text-lg">PALS</h3>
-            <p className="text-xs text-white/50 mt-1 font-medium">Pan IIT Alumni Leadership Series</p>
-          </div>
-        </div>
+        ))}
       </div>
 
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
-        
-        {/* Left Column */}
-        <div className="space-y-6 sm:space-y-8">
-          <section className="bg-white/5 border border-white/10 backdrop-blur-2xl rounded-3xl p-8 sm:p-10 shadow-2xl">
-            <h2 className="text-2xl font-semibold text-white mb-6 flex items-center gap-3">
-              <i className="fa-solid fa-bullseye text-white/50"></i> Problem Statement
-            </h2>
-            <p className="text-base text-white/70 leading-relaxed mb-6 font-medium">
-              The project involved the design, development, and manufacturing of Digital LED Display Boards for industrial communication within QTPL's production facility.
-            </p>
-            <ul className="space-y-4 text-sm text-white/70">
-              <li className="flex items-start gap-3">
-                <i className="fa-solid fa-check text-white mt-1 shrink-0"></i>
-                <span><strong className="text-white">Display Size:</strong> 50x100 cm LED digital display.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <i className="fa-solid fa-check text-white mt-1 shrink-0"></i>
-                <span><strong className="text-white">Connectivity:</strong> Enabled via Wi-Fi and SIM.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <i className="fa-solid fa-check text-white mt-1 shrink-0"></i>
-                <span><strong className="text-white">Visibility:</strong> Messages must be clearly visible from 50 meters across the 100m x 33m production shop.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <i className="fa-solid fa-check text-white mt-1 shrink-0"></i>
-                <span><strong className="text-white">Functionality:</strong> Real-time scrolling messages for canteen timings, bus arrivals, overtime schedules, and factory updates.</span>
-              </li>
-            </ul>
-          </section>
-
-          <section className="bg-white/5 border border-white/10 backdrop-blur-2xl rounded-3xl p-8 sm:p-10 shadow-2xl">
-            <h2 className="text-2xl font-semibold text-white mb-6 flex items-center gap-3">
-              <i className="fa-solid fa-microchip text-white/50"></i> System Architecture
-            </h2>
-            <div className="space-y-4">
-              <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
-                <h3 className="font-semibold text-white mb-2 text-base">3x3 Grid (Real-Time Messages)</h3>
-                <p className="text-sm text-white/60 leading-relaxed">
-                  Consists of 9 P10 LED panels, each controlled by a dedicated ESP8266 microcontroller per row. Messages are unicast via MQTT topics, ensuring precise row-wise control. The backend is implemented using a Flask-based web server.
-                </p>
-              </div>
-              <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
-                <h3 className="font-semibold text-white mb-2 text-base">2x2 & 1x1 Grids (Static/Time)</h3>
-                <p className="text-sm text-white/60 leading-relaxed">
-                  Driven by Huidu W2 controllers. These are configured via the LED Art app to handle static content, pre-designed animations, and precise time displays.
-                </p>
-              </div>
-            </div>
-          </section>
-        </div>
-
-        {/* Right Column */}
-        <div className="space-y-6 sm:space-y-8">
-          <section className="bg-white/5 border border-white/10 backdrop-blur-2xl rounded-3xl p-8 sm:p-10 shadow-2xl">
-            <h2 className="text-2xl font-semibold text-white mb-6 flex items-center gap-3">
-              <i className="fa-solid fa-flag-checkered text-white/50"></i> Project Outcomes
-            </h2>
-            <ul className="space-y-4">
-              <li className="flex items-start gap-4 bg-white/5 p-5 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors">
-                <div className="bg-white/10 p-3 rounded-full shrink-0">
-                  <i className="fa-solid fa-display text-white text-lg"></i>
-                </div>
-                <div>
-                  <h4 className="text-base font-semibold text-white">Functional Display System</h4>
-                  <p className="text-sm text-white/60 mt-1">Successfully designed and developed a modular digital LED display system.</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-4 bg-white/5 p-5 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors">
-                <div className="bg-white/10 p-3 rounded-full shrink-0">
-                  <i className="fa-solid fa-wifi text-white text-lg"></i>
-                </div>
-                <div>
-                  <h4 className="text-base font-semibold text-white">Remote Updating</h4>
-                  <p className="text-sm text-white/60 mt-1">Implemented Wi-Fi based remote message updating for seamless control.</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-4 bg-white/5 p-5 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors">
-                <div className="bg-white/10 p-3 rounded-full shrink-0">
-                  <i className="fa-solid fa-bolt text-white text-lg"></i>
-                </div>
-                <div>
-                  <h4 className="text-base font-semibold text-white">Real-Time Efficiency</h4>
-                  <p className="text-sm text-white/60 mt-1">Ensured real-time communication efficiency within the factory environment.</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-4 bg-white/5 p-5 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors">
-                <div className="bg-white/10 p-3 rounded-full shrink-0">
-                  <i className="fa-solid fa-industry text-white text-lg"></i>
-                </div>
-                <div>
-                  <h4 className="text-base font-semibold text-white">Industry Impact</h4>
-                  <p className="text-sm text-white/60 mt-1">Showcased technical feasibility leading to potential future implementations in other industries.</p>
-                </div>
-              </li>
-            </ul>
-          </section>
-
-          <section className="bg-white/5 border border-white/10 backdrop-blur-2xl rounded-3xl p-8 sm:p-10 shadow-2xl">
-            <h2 className="text-2xl font-semibold text-white mb-6 flex items-center gap-3">
-              <i className="fa-solid fa-users text-white/50"></i> Project Team
-            </h2>
-            
-            <div className="mb-8">
-              <h3 className="text-xs font-bold text-white/40 uppercase tracking-widest mb-4">Student Team (GPREC)</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="bg-white/5 p-4 rounded-2xl border border-white/10 text-sm font-medium text-white/80">S. Jagadeeshwar</div>
-                <div className="bg-white/5 p-4 rounded-2xl border border-white/10 text-sm font-medium text-white/80">S. Akash</div>
-                <div className="bg-white/5 p-4 rounded-2xl border border-white/10 text-sm font-medium text-white/80">P. Santhana Naik</div>
-                <div className="bg-white/5 p-4 rounded-2xl border border-white/10 text-sm font-medium text-white/80">J. Lingavardhan Reddy</div>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-xs font-bold text-white/40 uppercase tracking-widest mb-4">Mentors & Guides</h3>
-              <ul className="space-y-3 text-sm text-white/80">
-                <li className="bg-white/5 p-4 rounded-2xl border border-white/10"><strong className="text-white">Dr. K. Suresh Reddy</strong> - HOD ECE, GPREC</li>
-                <li className="bg-white/5 p-4 rounded-2xl border border-white/10"><strong className="text-white">B. Varalakshmi</strong> - Assistant Professor, GPREC</li>
-                <li className="bg-white/5 p-4 rounded-2xl border border-white/10"><strong className="text-white">Mr. Ravi Chandramouli</strong> - Managing Director, QTPL</li>
-                <li className="bg-white/5 p-4 rounded-2xl border border-white/10"><strong className="text-white">Mr. S. Krishna Kumar</strong> - PALS Mentor</li>
-              </ul>
-            </div>
-          </section>
-        </div>
-      </div>
-
-      {/* Location Section */}
-      <div className="mt-12 space-y-8">
-        <section className="bg-white/5 border border-white/10 backdrop-blur-2xl rounded-3xl p-8 sm:p-10 shadow-2xl">
-          <h2 className="text-2xl font-semibold text-white mb-8 flex items-center gap-3">
-            <i className="fa-solid fa-location-dot text-white/50"></i> Implementation Site
+      {/* Main Content */}
+      <div className="achievements-grid">
+        {/* Problem Statement */}
+        <div className="glass-panel achievement-card animate-fade-in-up animate-delay-2" style={{ padding: '32px' }}>
+          <h2 className="section-title" style={{ marginBottom: '20px' }}>
+            <i className="fa-solid fa-bullseye"></i> Problem Statement
           </h2>
-          <div className="bg-white/5 p-8 rounded-3xl border border-white/10 flex flex-col sm:flex-row justify-between items-center text-center sm:text-left gap-8">
-            <div className="flex items-center gap-6 flex-col sm:flex-row">
-              <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center border border-white/20 shrink-0">
-                <i className="fa-solid fa-building text-3xl text-white"></i>
+          <p style={{ fontSize: '14px', color: 'var(--color-text-muted)', lineHeight: 1.8, marginBottom: '20px' }}>
+            Design, develop, and manufacture Digital LED Display Boards for industrial communication within QTPL's production facility.
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {[
+              { label: 'Display Size', value: '50×100 cm LED digital display' },
+              { label: 'Connectivity', value: 'Wi-Fi and SIM enabled' },
+              { label: 'Visibility', value: 'Readable from 50m across 100m × 33m shop' },
+              { label: 'Functionality', value: 'Real-time scrolling messages for factory ops' },
+            ].map(item => (
+              <div key={item.label} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '12px 14px', background: 'rgba(34,211,238,0.03)', border: '1px solid rgba(34,211,238,0.06)', borderRadius: 'var(--radius-sm)' }}>
+                <i className="fa-solid fa-check" style={{ color: 'var(--color-accent)', marginTop: '2px', flexShrink: 0, fontSize: '12px' }}></i>
+                <span style={{ fontSize: '13px', color: 'var(--color-text-muted)', lineHeight: 1.5 }}>
+                  <strong style={{ color: 'var(--color-text)' }}>{item.label}:</strong> {item.value}
+                </span>
               </div>
-              <div>
-                <h3 className="font-semibold text-white text-xl">Quality Technologies Private Limited (QTPL)</h3>
-                <p className="text-base text-white/60 mt-2 font-medium">Industrial manufacturing facility where the LED display system was deployed.</p>
-              </div>
-            </div>
-            <a 
-              href="https://maps.app.goo.gl/U9rD78ERPzYkqyj79" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-white text-black hover:bg-white/90 rounded-full text-sm font-semibold transition-all shrink-0"
-            >
-              <i className="fa-solid fa-map-location-dot"></i> View on Google Maps
-            </a>
+            ))}
           </div>
-        </section>
+        </div>
+
+        {/* Outcomes */}
+        <div className="glass-panel achievement-card animate-fade-in-up animate-delay-2" style={{ padding: '32px' }}>
+          <h2 className="section-title" style={{ marginBottom: '20px' }}>
+            <i className="fa-solid fa-flag-checkered"></i> Outcomes
+          </h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {[
+              { icon: 'fa-display', title: 'Functional Display System', desc: 'Modular digital LED display system.', color: 'var(--color-accent)' },
+              { icon: 'fa-wifi', title: 'Remote Updating', desc: 'Wi-Fi based remote message updating.', color: '#a78bfa' },
+              { icon: 'fa-bolt', title: 'Real-Time Efficiency', desc: 'Real-time factory communication.', color: 'var(--color-warning)' },
+              { icon: 'fa-industry', title: 'Industry Impact', desc: 'Technical feasibility demonstrated.', color: 'var(--color-success)' },
+            ].map(item => (
+              <div key={item.title} style={{ display: 'flex', alignItems: 'flex-start', gap: '14px', padding: '16px', background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)' }}>
+                <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: `${item.color}15`, border: `1px solid ${item.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <i className={`fa-solid ${item.icon}`} style={{ color: item.color, fontSize: '15px' }}></i>
+                </div>
+                <div>
+                  <h4 style={{ fontWeight: 700, fontSize: '14px', marginBottom: '4px' }}>{item.title}</h4>
+                  <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', lineHeight: 1.5 }}>{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Architecture */}
+        <div className="glass-panel achievement-card animate-fade-in-up animate-delay-3" style={{ padding: '32px' }}>
+          <h2 className="section-title" style={{ marginBottom: '20px' }}>
+            <i className="fa-solid fa-microchip"></i> Architecture
+          </h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div style={{ padding: '20px', background: 'linear-gradient(135deg, rgba(34,211,238,0.05), rgba(139,92,246,0.03))', borderRadius: 'var(--radius-md)', border: '1px solid rgba(34,211,238,0.1)' }}>
+              <h3 style={{ fontWeight: 700, fontSize: '14px', marginBottom: '8px' }}>
+                <i className="fa-solid fa-table-cells" style={{ marginRight: '8px', color: 'var(--color-accent)', fontSize: '12px' }}></i>
+                3×3 Grid — Real-Time
+              </h3>
+              <p style={{ fontSize: '13px', color: 'var(--color-text-muted)', lineHeight: 1.7 }}>
+                9 P10 LED panels with dedicated ESP8266 per row. MQTT unicast with Flask backend.
+              </p>
+            </div>
+            <div style={{ padding: '20px', background: 'linear-gradient(135deg, rgba(139,92,246,0.05), rgba(52,211,153,0.03))', borderRadius: 'var(--radius-md)', border: '1px solid rgba(139,92,246,0.1)' }}>
+              <h3 style={{ fontWeight: 700, fontSize: '14px', marginBottom: '8px' }}>
+                <i className="fa-solid fa-display" style={{ marginRight: '8px', color: '#a78bfa', fontSize: '12px' }}></i>
+                2×2 & 1×1 — Static/Time
+              </h3>
+              <p style={{ fontSize: '13px', color: 'var(--color-text-muted)', lineHeight: 1.7 }}>
+                Huidu W2 controllers via LED Art app for static content and time displays.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Team */}
+        <div className="glass-panel achievement-card animate-fade-in-up animate-delay-3" style={{ padding: '32px' }}>
+          <h2 className="section-title" style={{ marginBottom: '20px' }}>
+            <i className="fa-solid fa-users"></i> Team
+          </h2>
+          <div style={{ marginBottom: '24px' }}>
+            <h3 className="field-label" style={{ marginBottom: '12px' }}>Student Team (GPREC)</h3>
+            <div className="team-grid">
+              {['S. Jagadeeshwar', 'S. Akash', 'P. Santhana Naik', 'J. Lingavardhan Reddy'].map(name => (
+                <div key={name} style={{ padding: '12px 14px', background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', fontSize: '13px', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{ width: '26px', height: '26px', borderRadius: '50%', background: 'linear-gradient(135deg, rgba(34,211,238,0.12), rgba(139,92,246,0.12))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 700, color: 'var(--color-accent)', flexShrink: 0 }}>
+                    {name.charAt(0)}
+                  </div>
+                  {name}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h3 className="field-label" style={{ marginBottom: '12px' }}>Mentors & Guides</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {[
+                { name: 'Dr. K. Suresh Reddy', role: 'HOD ECE, GPREC' },
+                { name: 'B. Varalakshmi', role: 'Asst. Professor' },
+                { name: 'Mr. Ravi Chandramouli', role: 'MD, QTPL' },
+                { name: 'Mr. S. Krishna Kumar', role: 'PALS Mentor' },
+              ].map(m => (
+                <div key={m.name} style={{ padding: '12px 14px', background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', fontSize: '13px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '4px' }}>
+                  <strong style={{ fontWeight: 600 }}>{m.name}</strong>
+                  <span style={{ fontSize: '11px', color: 'var(--color-text-dim)', fontWeight: 500 }}>{m.role}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Implementation Site */}
+      <div className="glass-panel achievement-card animate-fade-in-up animate-delay-4" style={{ marginTop: '24px', padding: '32px' }}>
+        <h2 className="section-title" style={{ marginBottom: '24px' }}>
+          <i className="fa-solid fa-location-dot"></i> Implementation Site
+        </h2>
+        <div style={{ padding: '24px', background: 'linear-gradient(135deg, rgba(34,211,238,0.04), rgba(139,92,246,0.03))', border: '1px solid rgba(34,211,238,0.08)', borderRadius: 'var(--radius-lg)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+            <div style={{ width: '52px', height: '52px', borderRadius: '16px', background: 'linear-gradient(135deg, rgba(34,211,238,0.1), rgba(139,92,246,0.1))', border: '1px solid rgba(34,211,238,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <i className="fa-solid fa-building" style={{ fontSize: '20px', color: 'var(--color-accent)' }}></i>
+            </div>
+            <div>
+              <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '4px' }}>Quality Technologies Pvt. Ltd.</h3>
+              <p style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>Industrial facility where the LED display was deployed</p>
+            </div>
+          </div>
+          <a href="https://maps.app.goo.gl/U9rD78ERPzYkqyj79" target="_blank" rel="noopener noreferrer" className="btn-primary btn-connect" style={{ textDecoration: 'none' }}>
+            <i className="fa-solid fa-map-location-dot"></i> View on Maps
+          </a>
+        </div>
       </div>
     </div>
   );

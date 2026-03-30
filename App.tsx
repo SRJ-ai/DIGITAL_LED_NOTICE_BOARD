@@ -12,7 +12,7 @@ const App: React.FC = () => {
   const [logs, setLogs] = useState<LogMessage[]>([]);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [currentView, setCurrentView] = useState<'app' | 'achievements'>('app');
-  
+
   const [config, setConfig] = useState<MqttConfig>({
     host: 'broker.hivemq.com',
     port: 8884,
@@ -46,7 +46,6 @@ const App: React.FC = () => {
       },
       (topic, msg) => {
         addLog('received', `[${topic}] ${msg}`);
-        
         if (topic === config.topic) {
           setHistory(prev => {
             const newItem: HistoryItem = {
@@ -58,9 +57,7 @@ const App: React.FC = () => {
           });
         }
       },
-      (err) => {
-        addLog('error', err);
-      }
+      (err) => { addLog('error', err); }
     );
   };
 
@@ -74,64 +71,52 @@ const App: React.FC = () => {
       addLog('error', 'Cannot send: Not connected');
       return;
     }
-    
     try {
       const sent = await publishMessage(config.topic, message);
-      if (sent) {
-        addLog('sent', message);
-      }
+      if (sent) addLog('sent', message);
     } catch (error: any) {
       addLog('error', error.message || 'Failed to publish message');
     }
   };
 
   return (
-    <div className="min-h-screen bg-black bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.15),rgba(255,255,255,0))] flex flex-col font-sans text-white/90 selection:bg-cyan-500/30">
+    <div className="app-bg">
+      <div className="floating-orb orb-1"></div>
+      <div className="floating-orb orb-2"></div>
+      <div className="floating-orb orb-3"></div>
+
       <Header status={status} currentView={currentView} onViewChange={setCurrentView} />
 
-      <main className="flex-grow p-4 md:p-6 max-w-7xl mx-auto w-full">
+      <main className="app-main">
         {currentView === 'app' ? (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            
-            {/* Left Column: Config & Controls */}
-            <div className="lg:col-span-4 flex flex-col gap-6">
-              <ConnectionPanel 
+          <div className="app-grid">
+            <div className="panel-connection">
+              <ConnectionPanel
                 config={config}
                 status={status}
                 onConfigChange={setConfig}
                 onConnect={handleConnect}
                 onDisconnect={handleDisconnect}
               />
-              
-              {/* Mobile/Tablet: Logs appear below connection on small screens, right on large */}
-              <div className="lg:hidden block">
-                <LogViewer logs={logs} />
-              </div>
             </div>
-
-            {/* Right Column: Control Interface & Desktop Logs */}
-            <div className="lg:col-span-8 flex flex-col gap-6">
-              <div className="flex-grow min-h-[400px] lg:min-h-[500px]">
-                <ControlCenter 
-                  connected={status === ConnectionStatus.CONNECTED}
-                  onSendMessage={handleSendMessage}
-                  history={history}
-                />
-              </div>
-              
-              <div className="hidden lg:block h-64">
-                 <LogViewer logs={logs} />
-              </div>
+            <div className="panel-control">
+              <ControlCenter
+                connected={status === ConnectionStatus.CONNECTED}
+                onSendMessage={handleSendMessage}
+                history={history}
+              />
             </div>
-
+            <div className="panel-log">
+              <LogViewer logs={logs} />
+            </div>
           </div>
         ) : (
           <Achievements />
         )}
       </main>
 
-      <footer className="py-4 text-center text-white/40 text-xs border-t border-white/5">
-        <p>© {new Date().getFullYear()} Matrix Commander. Built for ESP8266 & HiveMQ.</p>
+      <footer className="app-footer">
+        <p>© {new Date().getFullYear()} <span>Matrix Commander</span>. Built for ESP8266 & HiveMQ.</p>
       </footer>
     </div>
   );

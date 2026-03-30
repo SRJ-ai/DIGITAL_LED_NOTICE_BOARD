@@ -8,11 +8,11 @@ interface ControlCenterProps {
   history: HistoryItem[];
 }
 
-const presets: MatrixPreset[] = [
-  { name: 'ON', payload: 'ON', icon: 'fa-power-off', color: 'text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/10' },
-  { name: 'OFF', payload: 'OFF', icon: 'fa-power-off', color: 'text-red-400 border-red-500/30 hover:bg-red-500/10' },
-  { name: 'HELLO', payload: 'Hello World', icon: 'fa-hand-wave', color: 'text-amber-400 border-amber-500/30 hover:bg-amber-500/10' },
-  { name: 'TIME', payload: 'SHOW_TIME', icon: 'fa-clock', color: 'text-blue-400 border-blue-500/30 hover:bg-blue-500/10' },
+const presets: (MatrixPreset & { cssClass: string })[] = [
+  { name: 'ON', payload: 'ON', icon: 'fa-power-off', color: 'var(--color-success)', cssClass: 'preset-on' },
+  { name: 'OFF', payload: 'OFF', icon: 'fa-power-off', color: 'var(--color-danger)', cssClass: 'preset-off' },
+  { name: 'HELLO', payload: 'Hello World', icon: 'fa-hand-wave', color: 'var(--color-warning)', cssClass: 'preset-hello' },
+  { name: 'TIME', payload: 'SHOW_TIME', icon: 'fa-clock', color: 'var(--color-info)', cssClass: 'preset-time' },
 ];
 
 const ControlCenter: React.FC<ControlCenterProps> = ({ connected, onSendMessage, history }) => {
@@ -53,12 +53,11 @@ const ControlCenter: React.FC<ControlCenterProps> = ({ connected, onSendMessage,
   const handleAiGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!aiPrompt.trim()) return;
-
     setIsGenerating(true);
     try {
       const generated = await generateMatrixContent(aiPrompt, displayType, apiKey);
       await onSendMessage(generated);
-      setMessage(generated); // Also set it in input for visibility
+      setMessage(generated);
     } catch (error) {
       console.error("AI Gen Error", error);
       alert("Could not generate AI message. Check API Key.");
@@ -67,217 +66,162 @@ const ControlCenter: React.FC<ControlCenterProps> = ({ connected, onSendMessage,
     }
   };
 
+  const tabs = [
+    { id: 'manual' as const, label: 'Manual', icon: 'fa-keyboard' },
+    { id: 'ai' as const, label: 'AI Gen', icon: 'fa-wand-magic-sparkles' },
+    { id: 'history' as const, label: 'History', icon: 'fa-clock-rotate-left' },
+  ];
+
   return (
-    <div className="bg-white/5 border border-white/10 backdrop-blur-2xl rounded-3xl p-0 shadow-2xl overflow-hidden flex flex-col h-full">
+    <div className="glass-panel animate-fade-in-up animate-delay-1">
       {/* Tabs */}
-      <div className="flex border-b border-white/10 bg-white/5">
-        <button
-          onClick={() => setActiveTab('manual')}
-          className={`flex-1 py-4 px-2 text-xs sm:text-sm font-semibold transition-all duration-300 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2
-            ${activeTab === 'manual' ? 'bg-white/10 text-white border-b-2 border-white' : 'text-white/50 hover:text-white hover:bg-white/5'}`}
-        >
-          <i className="fa-solid fa-keyboard text-sm sm:text-base"></i>
-          <span className="truncate">Manual</span>
-        </button>
-        <button
-          onClick={() => setActiveTab('ai')}
-          className={`flex-1 py-4 px-2 text-xs sm:text-sm font-semibold transition-all duration-300 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2
-            ${activeTab === 'ai' ? 'bg-white/10 text-white border-b-2 border-white' : 'text-white/50 hover:text-white hover:bg-white/5'}`}
-        >
-          <i className="fa-solid fa-wand-magic-sparkles text-sm sm:text-base"></i>
-          <span className="truncate">AI Gen</span>
-        </button>
-        <button
-          onClick={() => setActiveTab('history')}
-          className={`flex-1 py-4 px-2 text-xs sm:text-sm font-semibold transition-all duration-300 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2
-            ${activeTab === 'history' ? 'bg-white/10 text-white border-b-2 border-white' : 'text-white/50 hover:text-white hover:bg-white/5'}`}
-        >
-          <i className="fa-solid fa-clock-rotate-left text-sm sm:text-base"></i>
-          <span className="truncate">History</span>
-        </button>
+      <div className="tab-container">
+        {tabs.map(tab => (
+          <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`tab-btn ${activeTab === tab.id ? 'active' : ''}`}>
+            <i className={`fa-solid ${tab.icon}`} style={{ fontSize: '13px' }}></i>
+            {tab.label}
+          </button>
+        ))}
       </div>
 
-      <div className="p-6 sm:p-8 flex-grow flex flex-col overflow-hidden">
+      <div style={{ padding: '24px 28px' }}>
+        {/* ---- Manual Tab ---- */}
         {activeTab === 'manual' && (
-          <form onSubmit={handleSend} className="flex flex-col gap-5 h-full">
-            <div>
-              <label className="block text-xs text-white/40 mb-2 uppercase font-bold tracking-widest">Message Payload</label>
+          <div>
+            {/* LED Preview */}
+            <div className="led-preview" style={{ marginBottom: '20px' }}>
+              <div className="led-dot"></div>
+              <div className="led-dot"></div>
+              <div className="led-dot"></div>
+              <span style={{ marginLeft: '4px' }}>LED Matrix Display</span>
+            </div>
+
+            <div style={{ marginBottom: '20px' }}>
+              <label className="field-label">Message Payload</label>
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 disabled={!connected}
                 placeholder="Enter text to display on LED Matrix..."
-                className="w-full h-32 bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all resize-none disabled:opacity-50 placeholder-white/30 font-mono"
+                className="input-field input-mono"
+                style={{ minHeight: '100px' }}
               />
             </div>
-            
-            <button
-              type="submit"
-              disabled={!connected || !message.trim() || isSending}
-              className="w-full py-3.5 bg-white text-black hover:bg-white/90 rounded-full font-semibold tracking-wide shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-            >
-              {isSending ? (
-                <><i className="fa-solid fa-circle-notch fa-spin mr-2.5"></i> Sending...</>
-              ) : (
-                <>Send to Matrix <i className="fa-solid fa-paper-plane ml-2.5"></i></>
-              )}
+
+            <button type="button" onClick={handleSend} disabled={!connected || !message.trim() || isSending}
+              className="btn-primary btn-send" style={{ width: '100%', marginBottom: '24px' }}>
+              {isSending ? (<><i className="fa-solid fa-circle-notch fa-spin"></i> Sending...</>) : (<><i className="fa-solid fa-paper-plane"></i> Send to Matrix</>)}
             </button>
 
-            {/* Quick Actions */}
-            <div className="mt-auto pt-6 border-t border-white/10">
-              <h3 className="text-xs text-white/40 uppercase font-bold tracking-widest mb-4">Quick Presets</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {/* Presets — Always visible */}
+            <div style={{ paddingTop: '20px', borderTop: '1px solid var(--color-border)' }}>
+              <h3 className="field-label" style={{ marginBottom: '14px' }}>Quick Presets</h3>
+              <div className="presets-grid">
                 {presets.map((preset) => (
-                  <button
-                    key={preset.name}
-                    onClick={() => onSendMessage(preset.payload)}
-                    disabled={!connected}
-                    type="button"
-                    className={`p-3 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 backdrop-blur-sm transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex flex-col items-center justify-center gap-2 group ${preset.color}`}
-                  >
-                    <i className={`fa-solid ${preset.icon} text-lg mb-1`}></i>
-                    <span className="text-xs font-semibold">{preset.name}</span>
+                  <button key={preset.name} onClick={() => onSendMessage(preset.payload)} disabled={!connected} type="button" className={`preset-btn ${preset.cssClass}`}>
+                    <i className={`fa-solid ${preset.icon}`} style={{ fontSize: '18px', color: preset.color }}></i>
+                    <span style={{ fontSize: '11px', fontWeight: 700, color: preset.color, letterSpacing: '0.05em' }}>{preset.name}</span>
                   </button>
                 ))}
               </div>
             </div>
-          </form>
-        )}
-
-        {activeTab === 'ai' && (
-          <div className="flex flex-col gap-5 h-full">
-             <div className="bg-white/5 border border-white/10 p-4 rounded-2xl shrink-0">
-                <p className="text-xs text-white/70 leading-relaxed">
-                  <i className="fa-solid fa-circle-info mr-1.5 text-white/40"></i>
-                  Describe what you want to say (e.g., "Cheer up my friend Bob"), and AI will format it for the LED display.
-                </p>
-             </div>
-
-             {isEditingKey ? (
-               <div className="bg-white/5 border border-white/10 p-6 rounded-2xl">
-                 <label className="block text-xs text-white/40 mb-3 uppercase font-bold tracking-widest">
-                   Gemini API Key Required
-                 </label>
-                 <div className="text-xs text-white/60 mb-5 space-y-3">
-                   <p>To use the AI generator, please provide your own free Gemini API key. It will be stored securely in your browser's local storage.</p>
-                   <div className="bg-white/5 p-4 rounded-xl border border-white/10 mt-3">
-                     <p className="font-semibold text-white/80 mb-2">How to get a free API key:</p>
-                     <ol className="list-decimal list-inside space-y-1.5 ml-1">
-                       <li>Go to <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-white hover:underline">Google AI Studio</a></li>
-                       <li>Sign in with your Google account</li>
-                       <li>Click <strong>"Create API key"</strong></li>
-                       <li>Copy the key and paste it below</li>
-                     </ol>
-                   </div>
-                 </div>
-                 <div className="flex gap-3">
-                   <input
-                     type="password"
-                     value={tempApiKey}
-                     onChange={(e) => setTempApiKey(e.target.value)}
-                     placeholder="AIzaSy..."
-                     className="flex-grow bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all"
-                   />
-                   <button
-                     onClick={handleSaveKey}
-                     disabled={!tempApiKey.trim()}
-                     className="px-6 py-3 bg-white text-black hover:bg-white/90 rounded-full text-sm font-semibold transition-all disabled:opacity-50 active:scale-[0.98]"
-                   >
-                     Save
-                   </button>
-                 </div>
-               </div>
-             ) : (
-               <form onSubmit={handleAiGenerate} className="flex flex-col gap-5 flex-grow">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-medium text-white/70"><i className="fa-solid fa-check-circle mr-1.5 text-white/40"></i> API Key Saved</span>
-                    <button type="button" onClick={handleClearKey} className="text-xs font-medium text-white/40 hover:text-white transition-colors">Clear Key</button>
-                  </div>
-                  <div>
-                    <label className="block text-xs text-white/40 mb-2 uppercase font-bold tracking-widest">Display Type</label>
-                    <div className="relative">
-                      <select
-                        value={displayType}
-                        onChange={(e) => setDisplayType(e.target.value as 'scrolling' | 'static')}
-                        disabled={!connected || isGenerating}
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all disabled:opacity-50 appearance-none"
-                      >
-                        <option value="scrolling" className="bg-black">Short Scrolling Text (LED Matrix)</option>
-                        <option value="static" className="bg-black">Static Text (Larger Display)</option>
-                      </select>
-                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white/40">
-                        <i className="fa-solid fa-chevron-down text-xs"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex-grow">
-                    <label className="block text-xs text-white/40 mb-2 uppercase font-bold tracking-widest">Idea Prompt</label>
-                    <textarea
-                      value={aiPrompt}
-                      onChange={(e) => setAiPrompt(e.target.value)}
-                      disabled={!connected || isGenerating}
-                      placeholder="Make a spooky halloween greeting..."
-                      className="w-full h-32 bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all resize-none disabled:opacity-50 placeholder-white/30"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={!connected || !aiPrompt.trim() || isGenerating}
-                    className="w-full py-3.5 bg-white text-black hover:bg-white/90 rounded-full font-semibold tracking-wide shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center group"
-                  >
-                     {isGenerating ? (
-                       <><i className="fa-solid fa-circle-notch fa-spin mr-2.5"></i> Generating...</>
-                     ) : (
-                       <>Generate & Send <i className="fa-solid fa-bolt ml-2.5 group-hover:animate-bounce"></i></>
-                     )}
-                  </button>
-               </form>
-             )}
           </div>
         )}
 
+        {/* ---- AI Tab ---- */}
+        {activeTab === 'ai' && (
+          <div>
+            <div className="info-box" style={{ marginBottom: '20px' }}>
+              <i className="fa-solid fa-sparkles" style={{ marginRight: '8px' }}></i>
+              Describe what you want to say and AI will craft it for the LED display.
+            </div>
+
+            {isEditingKey ? (
+              <div style={{ padding: '24px', background: 'rgba(255,255,255,0.02)', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
+                <label className="field-label" style={{ marginBottom: '12px' }}>
+                  <i className="fa-solid fa-key" style={{ marginRight: '6px', color: 'var(--color-accent)' }}></i>
+                  Gemini API Key Required
+                </label>
+                <p style={{ fontSize: '13px', color: 'var(--color-text-muted)', lineHeight: 1.7, marginBottom: '16px' }}>
+                  Provide your free Gemini API key. Stored only in your browser.
+                </p>
+                <div style={{ padding: '16px', background: 'rgba(34,211,238,0.04)', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(34,211,238,0.1)', marginBottom: '20px' }}>
+                  <p style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text)', marginBottom: '10px' }}>How to get a free key:</p>
+                  <ol style={{ fontSize: '12px', color: 'var(--color-text-muted)', lineHeight: 2, paddingLeft: '20px' }}>
+                    <li>Visit <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-accent)', textDecoration: 'none' }}>Google AI Studio</a></li>
+                    <li>Sign in with Google</li>
+                    <li>Click <strong style={{ color: 'var(--color-text)' }}>"Create API key"</strong></li>
+                    <li>Paste it below</li>
+                  </ol>
+                </div>
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                  <input type="password" value={tempApiKey} onChange={(e) => setTempApiKey(e.target.value)} placeholder="AIzaSy..." className="input-field input-mono" style={{ flex: '1 1 200px' }} />
+                  <button onClick={handleSaveKey} disabled={!tempApiKey.trim()} className="btn-primary btn-connect">Save</button>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--color-success)' }}>
+                    <i className="fa-solid fa-check-circle" style={{ marginRight: '6px' }}></i>API Key Saved
+                  </span>
+                  <button type="button" onClick={handleClearKey} style={{ background: 'none', border: 'none', color: 'var(--color-text-dim)', fontSize: '12px', fontFamily: 'var(--font-sans)', fontWeight: 600, cursor: 'pointer' }}>Clear Key</button>
+                </div>
+                <div style={{ marginBottom: '20px' }}>
+                  <label className="field-label">Display Type</label>
+                  <div style={{ position: 'relative' }}>
+                    <select value={displayType} onChange={(e) => setDisplayType(e.target.value as 'scrolling' | 'static')} disabled={!connected || isGenerating} className="input-field">
+                      <option value="scrolling" style={{ background: '#030712' }}>Short Scrolling Text (LED Matrix)</option>
+                      <option value="static" style={{ background: '#030712' }}>Static Text (Larger Display)</option>
+                    </select>
+                    <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--color-text-dim)' }}>
+                      <i className="fa-solid fa-chevron-down" style={{ fontSize: '10px' }}></i>
+                    </div>
+                  </div>
+                </div>
+                <div style={{ marginBottom: '20px' }}>
+                  <label className="field-label">Idea Prompt</label>
+                  <textarea value={aiPrompt} onChange={(e) => setAiPrompt(e.target.value)} disabled={!connected || isGenerating} placeholder="Make a spooky halloween greeting..." className="input-field" style={{ minHeight: '100px' }} />
+                </div>
+                <button type="button" onClick={handleAiGenerate} disabled={!connected || !aiPrompt.trim() || isGenerating} className="btn-primary btn-send" style={{ width: '100%' }}>
+                  {isGenerating ? (<><i className="fa-solid fa-circle-notch fa-spin"></i> Generating...</>) : (<><i className="fa-solid fa-wand-magic-sparkles"></i> Generate & Send</>)}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ---- History Tab ---- */}
         {activeTab === 'history' && (
-          <div className="flex flex-col h-full">
-              <div className="bg-white/5 rounded-2xl border border-white/10 flex-grow overflow-y-auto custom-scrollbar p-4 space-y-3">
-                  {history.length === 0 ? (
-                      <div className="h-full flex flex-col items-center justify-center text-white/40">
-                          <i className="fa-solid fa-folder-open text-4xl mb-3 opacity-50"></i>
-                          <p className="text-sm font-medium">No messages yet</p>
-                          <p className="text-xs text-white/30 mt-1">Messages sent to the topic will appear here.</p>
+          <div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px', maxHeight: '400px', overflowY: 'auto' }}>
+              {history.length === 0 ? (
+                <div style={{ padding: '48px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-dim)' }}>
+                  <i className="fa-solid fa-inbox" style={{ fontSize: '40px', opacity: 0.3, marginBottom: '16px' }}></i>
+                  <p style={{ fontSize: '14px', fontWeight: 600, marginBottom: '4px', color: 'var(--color-text-muted)' }}>No messages yet</p>
+                  <p style={{ fontSize: '12px' }}>Messages sent to the topic will appear here.</p>
+                </div>
+              ) : (
+                history.map(item => (
+                  <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 18px', background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', gap: '12px' }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: '10px', color: 'var(--color-text-dim)', fontFamily: 'var(--font-mono)', marginBottom: '4px' }}>
+                        <i className="fa-regular fa-clock" style={{ marginRight: '6px' }}></i>{item.timestamp.toLocaleTimeString()}
                       </div>
-                  ) : (
-                      history.map(item => (
-                          <div key={item.id} className="bg-white/5 border border-white/10 p-4 rounded-2xl flex justify-between items-center group hover:border-white/30 hover:bg-white/10 transition-all">
-                              <div className="flex-grow mr-4 min-w-0">
-                                  <div className="text-[10px] text-white/40 font-mono mb-1.5 flex items-center">
-                                    <i className="fa-regular fa-clock mr-1.5"></i>
-                                    {item.timestamp.toLocaleTimeString()}
-                                  </div>
-                                  <div className="text-sm text-white/90 font-mono break-all">
-                                      {item.payload}
-                                  </div>
-                              </div>
-                              <button 
-                                  onClick={() => {
-                                      setMessage(item.payload);
-                                      setActiveTab('manual');
-                                  }}
-                                  disabled={!connected}
-                                  className="p-2.5 bg-white/5 text-white/60 hover:bg-white hover:text-black rounded-xl transition-all shrink-0"
-                                  title="Use this message"
-                              >
-                                  <i className="fa-solid fa-pen-to-square"></i>
-                              </button>
-                          </div>
-                      ))
-                  )}
-              </div>
-              <div className="mt-4 text-center">
-                  <p className="text-[10px] text-white/40 font-medium">
-                    <i className="fa-solid fa-circle-info mr-1.5"></i>
-                    Showing last {history.length} messages received on current session
-                  </p>
-              </div>
+                      <div style={{ fontSize: '13px', color: 'var(--color-text)', fontFamily: 'var(--font-mono)', wordBreak: 'break-all' }}>{item.payload}</div>
+                    </div>
+                    <button onClick={() => { setMessage(item.payload); setActiveTab('manual'); }} disabled={!connected}
+                      style={{ padding: '8px 10px', background: 'rgba(34,211,238,0.08)', color: 'var(--color-accent)', border: '1px solid rgba(34,211,238,0.15)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', flexShrink: 0, fontFamily: 'var(--font-sans)' }}>
+                      <i className="fa-solid fa-arrow-rotate-left"></i>
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+            <p style={{ fontSize: '11px', color: 'var(--color-text-dim)', fontWeight: 500, textAlign: 'center' }}>
+              <i className="fa-solid fa-circle-info" style={{ marginRight: '6px' }}></i>
+              Showing last {history.length} messages from current session
+            </p>
           </div>
         )}
       </div>
