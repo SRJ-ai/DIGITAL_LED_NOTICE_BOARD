@@ -1,0 +1,5 @@
+{
+  "name": "Matrix Commander",
+  "description": "A professional MQTT client designed for controlling ESP8266 LED Matrices via HiveMQ. Features AI-powered message generation and secure authentication.",
+  "requestFramePermissions": []
+}
